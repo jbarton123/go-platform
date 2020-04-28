@@ -16,10 +16,10 @@ type goal struct {
 	step   float64
 
 	counter float64
-	cols    map[int]pixel.RGBA
+	cols    [10]pixel.RGBA
 }
 
-func NewGoalGenerator(pos pixel.Vec, radius float64, step float64, counter float64, cols map[int]pixel.RGBA) GoalGenerator {
+func NewGoalGenerator(pos pixel.Vec, radius float64, step float64, counter float64, cols [10]pixel.RGBA) GoalGenerator {
 	return &goal{
 		pos:     pos,
 		radius:  radius,

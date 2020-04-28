@@ -11,19 +11,19 @@ type PlatformGenerator interface {
 }
 
 type Platform struct {
-	rect  pixel.Rect
-	color color.Color
+	Rect  pixel.Rect
+	Color color.Color
 }
 
 func NewPlatformGenerator(rect pixel.Rect, color color.Color) PlatformGenerator {
 	return &Platform{
-		rect:  rect,
-		color: color,
+		Rect:  rect,
+		Color: color,
 	}
 }
 
 func (p *Platform) Generate(imd *imdraw.IMDraw) {
-	imd.Color = p.color
-	imd.Push(p.rect.Min, p.rect.Max)
+	imd.Color = p.Color
+	imd.Push(p.Rect.Min, p.Rect.Max)
 	imd.Rectangle(0)
 }

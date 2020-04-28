@@ -18,9 +18,6 @@ import (
 const (
 	spritePath = "sprite.png"
 	spriteCoordinates = "sprite_coordinates.csv"
-	idle generator.AnimState = iota
-	running
-	jumping
 )
 
 func run() {
@@ -41,20 +38,18 @@ func run() {
 		panic(err)
 	}
 
-	columns = make(map[int]pixel.RGBA)
-	//columns[10] =
-
-	phys := generator.NewSpritePhysicsUpdater(-300, 64, 192, pixel.R(-6, -7, 6, 7), pixel.ZV, false)
+	columns := [10]pixel.RGBA{}
+	physics := generator.NewSpritePhysicsUpdater(-300, 64, 192, pixel.R(-6, -7, 6, 7), pixel.ZV, false)
 	color := generator.NewRandomColor()
-	anim := generator.NewSpriteGenerator(sheet, anims, 1.0/10, 0, 0, +1, anims["Front"][0], nil)
-	goal := generator.NewGoalGenerator(pixel.V(70, 40), 18, 1.0/7, 0, columns[10])
+	sprite := generator.NewSpriteGenerator(sheet, anims, 1.0/10, 0, 0, +1, anims["Front"][0], nil)
+	goal := generator.NewGoalGenerator(pixel.V(70, 40), 10, 1.0/7, 0, columns)
 
 	// hardcoded level
-	platforms := []generator.PlatformGenerator{
-		generator.NewPlatformGenerator(pixel.R(-1000, -11, 100, -10), color.Generate()),
-		generator.NewPlatformGenerator(pixel.R(150, -11, 300, -10), color.Generate()),
-		generator.NewPlatformGenerator(pixel.R(-10, 1.5, 20, 2), color.Generate()),
-		generator.NewPlatformGenerator(pixel.R(40, 10, 60, 12), color.Generate()),
+	platforms := []generator.Platform{
+		{Rect:  pixel.R(-1000, -11, 100, -10), Color: color.Generate()},
+		{Rect:  pixel.R(150, -11, 300, -10), Color: color.Generate()},
+		{Rect:  pixel.R(-10, 1.5, 20, 2), Color: color.Generate()},
+		{Rect:  pixel.R(40, 10, 60, 12), Color: color.Generate()},
 	}
 
 	canvas := pixelgl.NewCanvas(pixel.R(-160/2, -120/2, 160/2, 120/2))
@@ -69,7 +64,7 @@ func run() {
 		last = time.Now()
 
 		// lerp the camera position towards the gopher
-		camPos = pixel.Lerp(camPos, phys.rect.Center(), 1-math.Pow(1.0/128, dt))
+		camPos = pixel.Lerp(camPos, physics.Rect.Center(), 1-math.Pow(1.0/128, dt))
 		cam := pixel.IM.Moved(camPos.Scaled(-1))
 		canvas.SetMatrix(cam)
 
@@ -80,8 +75,8 @@ func run() {
 
 		// restart the level on pressing enter
 		if win.JustPressed(pixelgl.KeyEnter) {
-			phys.Rect = phys.Rect.Moved(phys.Rect.Center().Scaled(-1))
-			phys.Vel = pixel.ZV
+			physics.Rect = physics.Rect.Moved(physics.Rect.Center().Scaled(-1))
+			physics.Vel = pixel.ZV
 		}
 
 		// control the gopher with keys
@@ -97,9 +92,9 @@ func run() {
 		}
 
 		// update the physics and animation
-		phys.Update(dt, ctrl, platforms)
+		physics.Update(dt, ctrl, platforms)
 		goal.Update(dt, color.Generate())
-		anim.Update(dt, phys)
+		sprite.Update(dt, physics)
 
 		// draw the scene to the canvas using IMDraw
 		canvas.Clear(colornames.Black)
@@ -110,7 +105,7 @@ func run() {
 		}
 
 		goal.Generate(imd)
-		anim.Generate(imd, &phys)
+		sprite.Generate(imd, physics)
 		imd.Draw(canvas)
 
 		// stretch the canvas to the window

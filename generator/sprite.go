@@ -2,8 +2,13 @@ package generator
 
 import (
 	"github.com/faiface/pixel"
-	"go-platform/data/model"
 	"math"
+)
+
+const (
+	idle AnimState = iota
+	running
+	jumping
 )
 
 type AnimState int
@@ -37,7 +42,7 @@ func NewSpriteGenerator(sheet pixel.Picture, anims map[string][]pixel.Rect, rate
 	}
 }
 
-func (ga *spriteAnimation) Generate(target pixel.Target, physics *model.SpritePhysics) {
+func (ga *spriteAnimation) Generate(target pixel.Target, physics *SpritePhysics) {
 	if ga.sprite == nil {
 		ga.sprite = pixel.NewSprite(nil, pixel.Rect{})
 	}
@@ -54,7 +59,7 @@ func (ga *spriteAnimation) Generate(target pixel.Target, physics *model.SpritePh
 	)
 }
 
-func (ga *spriteAnimation) Update(dt float64, physics *model.SpritePhysics) {
+func (ga *spriteAnimation) Update(dt float64, physics *SpritePhysics) {
 	ga.counter += dt
 
 	// determine the new animation state
@@ -83,7 +88,7 @@ func (ga *spriteAnimation) Update(dt float64, physics *model.SpritePhysics) {
 		ga.frame = ga.anims["Run"][i%len(ga.anims["Run"])]
 	case jumping:
 		speed := physics.Vel.Y
-		i := int((-speed/physics.jumpSpeed + 1) / 2 * float64(len(ga.anims["Jump"])))
+		i := int((-speed/physics.JumpSpeed + 1) / 2 * float64(len(ga.anims["Jump"])))
 		if i < 0 {
 			i = 0
 		}
