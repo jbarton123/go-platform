@@ -1,6 +1,8 @@
-package generator
+package drawer
 
-import "github.com/faiface/pixel"
+import (
+	"github.com/faiface/pixel"
+)
 
 type Physics interface {
 	Update(dt float64, ctrl pixel.Vec, platforms []Platform)
@@ -15,7 +17,7 @@ type SpritePhysics struct {
 	Ground    bool
 }
 
-func NewSpritePhysicsUpdater(gravity float64, runSpeed float64, jumpSpeed float64, rect pixel.Rect, vel pixel.Vec, ground bool) *SpritePhysics {
+func NewSpritePhysicsUpdater(gravity, runSpeed, jumpSpeed float64, rect pixel.Rect, vel pixel.Vec, ground bool) *SpritePhysics {
 	return &SpritePhysics{
 		Gravity:   gravity,
 		RunSpeed:  runSpeed,

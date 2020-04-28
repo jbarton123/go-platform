@@ -1,12 +1,12 @@
-package generator
+package drawer
 
 import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 )
 
-type GoalGenerator interface {
-	Generate(imd *imdraw.IMDraw)
+type GoalDrawer interface {
+	Draw(imd *imdraw.IMDraw)
 	Update(dt float64, randomColor pixel.RGBA)
 }
 
@@ -19,7 +19,7 @@ type goal struct {
 	cols    [10]pixel.RGBA
 }
 
-func NewGoalGenerator(pos pixel.Vec, radius float64, step float64, counter float64, cols [10]pixel.RGBA) GoalGenerator {
+func NewGoalDrawer(pos pixel.Vec, radius, step, counter float64, cols [10]pixel.RGBA) GoalDrawer {
 	return &goal{
 		pos:     pos,
 		radius:  radius,
@@ -29,7 +29,7 @@ func NewGoalGenerator(pos pixel.Vec, radius float64, step float64, counter float
 	}
 }
 
-func (g *goal) Generate(imd *imdraw.IMDraw) {
+func (g *goal) Draw(imd *imdraw.IMDraw) {
 	for i := len(g.cols) - 1; i >= 0; i-- {
 		imd.Color = g.cols[i]
 		imd.Push(g.pos)

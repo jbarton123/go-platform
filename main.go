@@ -39,14 +39,13 @@ func run() {
 		panic(err)
 	}
 
-	columns := [10]pixel.RGBA{}
-	physics := generator.NewSpritePhysicsUpdater(-300, 64, 192, pixel.R(-6, -7, 6, 7), pixel.ZV, false)
+	physics := drawer.NewSpritePhysicsUpdater(-300, 64, 192, pixel.R(-6, -7, 6, 7), pixel.ZV, false)
 	color := generator.NewRandomColor()
 	gopherDrawer := drawer.NewSpriteDrawer(sheet, anims, 1.0/10, 0, 0, +1, anims["Front"][0])
-	goal := generator.NewGoalGenerator(pixel.V(70, 40), 10, 1.0/7, 0, columns)
+	goal := drawer.NewGoalDrawer(pixel.V(70, 40), 10, 1.0/7, 0, [10]pixel.RGBA{})
 
 	// hardcoded level
-	platforms := []generator.Platform{
+	platforms := []drawer.Platform{
 		{Rect:  pixel.R(-1000, -11, 100, -10), Color: color.Generate()},
 		{Rect:  pixel.R(150, -11, 300, -10), Color: color.Generate()},
 		{Rect:  pixel.R(-10, 1.5, 20, 2), Color: color.Generate()},
@@ -102,10 +101,10 @@ func run() {
 		imd.Clear()
 
 		for _, p := range platforms {
-			p.Generate(imd)
+			p.Draw(imd)
 		}
 
-		goal.Generate(imd)
+		goal.Draw(imd)
 		gopherDrawer.Draw(imd, physics)
 		imd.Draw(canvas)
 

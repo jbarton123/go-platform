@@ -2,7 +2,6 @@ package drawer
 
 import (
 	"github.com/faiface/pixel"
-	"go-platform/generator"
 	"math"
 )
 
@@ -15,8 +14,8 @@ const (
 type AnimState int
 
 type SpriteDrawer interface {
-	Draw(target pixel.Target, physics *generator.SpritePhysics)
-	Update(dt float64, physics *generator.SpritePhysics)
+	Draw(target pixel.Target, physics *SpritePhysics)
+	Update(dt float64, physics *SpritePhysics)
 }
 
 type spriteAnimation struct {
@@ -42,7 +41,7 @@ func NewSpriteDrawer(sheet pixel.Picture, anims map[string][]pixel.Rect, rate fl
 	}
 }
 
-func (ga *spriteAnimation) Draw(target pixel.Target, physics *generator.SpritePhysics) {
+func (ga *spriteAnimation) Draw(target pixel.Target, physics *SpritePhysics) {
 	if ga.sprite == nil {
 		ga.sprite = pixel.NewSprite(nil, pixel.Rect{})
 	}
@@ -59,7 +58,7 @@ func (ga *spriteAnimation) Draw(target pixel.Target, physics *generator.SpritePh
 	)
 }
 
-func (ga *spriteAnimation) Update(dt float64, physics *generator.SpritePhysics) {
+func (ga *spriteAnimation) Update(dt float64, physics *SpritePhysics) {
 	ga.counter += dt
 
 	// determine the new animation state
