@@ -1,14 +1,14 @@
 package main
 
 import (
-	"go-platform/drawer"
-	"go-platform/generator"
-	"go-platform/sprite"
+	_ "image/png"
 	"math"
 	"math/rand"
 	"time"
 
-	_ "image/png"
+	"go-platform/drawer"
+	"go-platform/generator"
+	"go-platform/sprite"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -21,6 +21,11 @@ const (
 	spriteCoordinates = "./assets/sprites/coordinates/gopher.csv"
 )
 
+type GoalDrawer interface {
+	Draw(imd *imdraw.IMDraw)
+	Update(dt float64, randomColor pixel.RGBA)
+}
+
 func run() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -30,7 +35,7 @@ func run() {
 	}
 
 	cfg := pixelgl.WindowConfig{
-		Title:  "Platformer",
+		Title:  "SuperGopher",
 		Bounds: pixel.R(0, 0, 1024, 768),
 		VSync:  true,
 	}
@@ -44,12 +49,14 @@ func run() {
 	gopherDrawer := drawer.NewSpriteDrawer(sheet, anims, 1.0/10, 0, 0, +1, anims["Front"][0])
 	goal := drawer.NewGoalDrawer(pixel.V(70, 40), 10, 1.0/7, 0, [10]pixel.RGBA{})
 
-	// hardcoded level
+	// hardcoded level for now
 	platforms := []drawer.Platform{
-		{Rect:  pixel.R(-1000, -11, 100, -10), Color: color.Generate()},
-		{Rect:  pixel.R(150, -11, 300, -10), Color: color.Generate()},
-		{Rect:  pixel.R(-10, 1.5, 20, 2), Color: color.Generate()},
-		{Rect:  pixel.R(40, 10, 60, 12), Color: color.Generate()},
+		{Rect: pixel.R(-1000, -11, 100, -10), Color: color.Generate()},
+		{Rect: pixel.R(150, -11, 300, -10), Color: color.Generate()},
+		{Rect: pixel.R(270, -30, 400, -29), Color: color.Generate()},
+		{Rect: pixel.R(-10, 1.5, 20, 2), Color: color.Generate()},
+		{Rect: pixel.R(40, 10, 60, 12), Color: color.Generate()},
+		{Rect: pixel.R(40, 10, 60, 12), Color: color.Generate()},
 	}
 
 	canvas := pixelgl.NewCanvas(pixel.R(-160/2, -120/2, 160/2, 120/2))
@@ -59,6 +66,8 @@ func run() {
 	camPos := pixel.ZV
 
 	last := time.Now()
+
+	// Game loop
 	for !win.Closed() {
 		dt := time.Since(last).Seconds()
 		last = time.Now()

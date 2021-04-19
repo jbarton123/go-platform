@@ -5,11 +5,6 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
-type GoalDrawer interface {
-	Draw(imd *imdraw.IMDraw)
-	Update(dt float64, randomColor pixel.RGBA)
-}
-
 type goal struct {
 	pos    pixel.Vec
 	radius float64
@@ -19,7 +14,7 @@ type goal struct {
 	cols    [10]pixel.RGBA
 }
 
-func NewGoalDrawer(pos pixel.Vec, radius, step, counter float64, cols [10]pixel.RGBA) GoalDrawer {
+func NewGoalDrawer(pos pixel.Vec, radius, step, counter float64, cols [10]pixel.RGBA) *goal {
 	return &goal{
 		pos:     pos,
 		radius:  radius,

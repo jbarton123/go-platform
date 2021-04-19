@@ -1,14 +1,11 @@
 package generator
 
 import (
-	"github.com/faiface/pixel"
 	"math"
 	"math/rand"
-)
 
-type RandomColorGenerator interface {
-	Generate()
-}
+	"github.com/faiface/pixel"
+)
 
 type randomcolor struct {
 }
